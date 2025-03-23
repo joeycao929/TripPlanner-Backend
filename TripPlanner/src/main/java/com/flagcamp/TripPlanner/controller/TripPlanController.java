@@ -14,12 +14,23 @@ public class TripPlanController {
 
     @PostMapping("/tripplan")
     public String getTripPlan(String body){
+        //use string or json to get the body?
+        //get the user id from the body
+        //create a new tripPlanEntity
+        //set the user id as key and tripPlanEntity as value
+        //save it in the cache
+        //return the tripPlanEntity created by gemini chat service
+
+
+        //tripPlanService.saveTempData(new TripPlanEntity());//save the temp data to the database
+        //return the tripPlanEntity created by gemini chat service
         return null;
     }
 
     @PostMapping("/tripplan/save")
     public void getTripPlan(@RequestBody TripSearchBody body){
         // save data to database
+        // tripPlanService.saveDataToDatabase(request.userId(), request.tripDetail());
 
     }
 }
