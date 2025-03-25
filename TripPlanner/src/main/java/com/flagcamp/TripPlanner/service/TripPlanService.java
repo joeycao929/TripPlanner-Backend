@@ -1,6 +1,7 @@
 package com.flagcamp.TripPlanner.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flagcamp.TripPlanner.repository.TripPlanRepository;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +18,17 @@ public class TripPlanService {
     private final TripPlanRepository tripPlanRepository;
 
     @Autowired
-    public TripPlanService(CacheManager cacheManager, TripPlanRepository tripPlanRepository) {
+    public TripPlanService(CacheManager cacheManager, TripPlanRepository tripPlanRepository, ObjectMapper objectMapper) {
         this.cacheManager = cacheManager;
         this.tripPlanRepository = tripPlanRepository;
     }
 
     // 将数据暂存到缓存
-    public void saveTempData(long userId, String city, String country,
-                             LocalDate startTime, LocalDate endTime, String preferences, String tripDetail) {
+    public void saveTempData(long userId, String city, String state, String country,
+                             LocalDate startTime, LocalDate endTime, String preferences, JsonNode tripDetail) {
         Cache<String, TripEntity> cache = getCache();
-        TripEntity tripPlan = new TripEntity(null, userId, city, country, startTime, endTime, preferences,tripDetail);
+
+        TripEntity tripPlan = new TripEntity(null, userId, city, state, country, startTime, endTime, preferences, tripDetail);
         cache.put(String.valueOf(userId), tripPlan);  // 缓存中存入TripPlanEntity
     }
 
@@ -39,12 +41,14 @@ public class TripPlanService {
     // 将数据从缓存中取出并存入数据库
     public void saveDataToDatabase(long userId) {
         TripEntity tripPlan = getTempData(userId);
+
         if (tripPlan != null) {
-            // 使用record的不可变特性，更新tripDetail并创建新的TripPlanEntity实例
+//             使用record的不可变特性，更新tripDetail并创建新的TripPlanEntity实例
             TripEntity updatedTripPlan = new TripEntity(
                     tripPlan.id(),  // 保持原有ID
                     tripPlan.userId(),
                     tripPlan.city(),
+                    tripPlan.state(),
                     tripPlan.country(),
                     tripPlan.startTime(),
                     tripPlan.endTime(),
