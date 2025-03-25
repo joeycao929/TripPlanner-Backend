@@ -1,11 +1,14 @@
 package com.flagcamp.TripPlanner.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.flagcamp.TripPlanner.repository.TripPlanRepository;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import com.flagcamp.TripPlanner.entity.TripEntity;
+
+import java.time.LocalDate;
 
 @Service
 public class TripPlanService {
@@ -21,9 +24,9 @@ public class TripPlanService {
 
     // 将数据暂存到缓存
     public void saveTempData(long userId, String city, String country,
-                             String startDate, String endDate, String preferences,String tripDetail) {
+                             LocalDate startTime, LocalDate endTime, String preferences, String tripDetail) {
         Cache<String, TripEntity> cache = getCache();
-        TripEntity tripPlan = new TripEntity(null, userId, city, country, startDate, endDate, preferences,tripDetail);
+        TripEntity tripPlan = new TripEntity(null, userId, city, country, startTime, endTime, preferences,tripDetail);
         cache.put(String.valueOf(userId), tripPlan);  // 缓存中存入TripPlanEntity
     }
 
@@ -34,7 +37,7 @@ public class TripPlanService {
     }
 
     // 将数据从缓存中取出并存入数据库
-    public void saveDataToDatabase(long userId, String tripDetail) {
+    public void saveDataToDatabase(long userId) {
         TripEntity tripPlan = getTempData(userId);
         if (tripPlan != null) {
             // 使用record的不可变特性，更新tripDetail并创建新的TripPlanEntity实例
@@ -43,10 +46,10 @@ public class TripPlanService {
                     tripPlan.userId(),
                     tripPlan.city(),
                     tripPlan.country(),
-                    tripPlan.startDate(),
-                    tripPlan.endDate(),
+                    tripPlan.startTime(),
+                    tripPlan.endTime(),
                     tripPlan.preferences(),
-                    tripDetail // 更新tripDetail
+                    tripPlan.tripPlanDetail()
             );
             tripPlanRepository.save(updatedTripPlan); // 存入数据库
             getCache().invalidate(String.valueOf(userId)); // 清除缓存
