@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import com.flagcamp.TripPlanner.entity.TripEntity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TripPlanService {
@@ -62,11 +65,23 @@ public class TripPlanService {
         }
     }
 
+    // 获取所有保存的旅行计划
+    public List<TripEntity> getAllSavedTrips() {
+        List<TripEntity> trips = new ArrayList<>();
+        tripPlanRepository.findAll().forEach(trips::add);
+        return trips;
+    }
+
+    // 通过ID获取特定的旅行计划
+    public TripEntity getSavedTripById(Long tripId) {
+        Optional<TripEntity> tripOptional = tripPlanRepository.findById(tripId);
+        return tripOptional.orElse(null);
+    }
+
     // 获取缓存实例
     private Cache<String, TripEntity> getCache() {
         org.springframework.cache.Cache cache = cacheManager.getCache("tripPlanCache");
         return (Cache<String, TripEntity>) cache.getNativeCache();
     }
-
 }
 
