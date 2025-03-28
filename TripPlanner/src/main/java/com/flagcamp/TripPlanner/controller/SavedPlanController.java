@@ -168,21 +168,18 @@ public class SavedPlanController {
                     copyField(place, formattedPlace, "travel_time_to_next_location");
                     copyField(place, formattedPlace, "suggest_time_to_spend");
                     
-                    // Process reviews - convert to array format
-                    ArrayNode reviewsArray = formattedPlace.putArray("reviews");
-                    
+                    // Process review field - keep as single string instead of array
                     if (place.has("review")) {
-                        // If there's a single review, add it to the array
-                        reviewsArray.add(place.get("review").asText());
+                        // Use existing review field as is
+                        formattedPlace.put("review", place.get("review").asText());
                     } else if (place.has("reviews")) {
-                        // If there are already reviews in an array, preserve them
+                        // If there's a reviews array, use the first review or join them
                         JsonNode existingReviews = place.get("reviews");
-                        if (existingReviews.isArray()) {
-                            for (JsonNode review : existingReviews) {
-                                reviewsArray.add(review.asText());
-                            }
+                        if (existingReviews.isArray() && existingReviews.size() > 0) {
+                            // Get the first review from the array
+                            formattedPlace.put("review", existingReviews.get(0).asText());
                         } else if (existingReviews.isTextual()) {
-                            reviewsArray.add(existingReviews.asText());
+                            formattedPlace.put("review", existingReviews.asText());
                         }
                     }
                     

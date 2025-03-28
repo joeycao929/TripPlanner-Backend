@@ -24,4 +24,4 @@ logging:
 gemini:
   api:
     url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=
-    key: 
+    key: AIzaSyDXbgMe9DcksZVMvivoR-n_m1I6CigAMBc
