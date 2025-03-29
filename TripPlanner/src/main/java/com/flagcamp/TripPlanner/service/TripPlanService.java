@@ -78,6 +78,11 @@ public class TripPlanService {
         return tripOptional.orElse(null);
     }
 
+    // 获取特定用户的所有保存的旅行计划
+    public List<TripEntity> getSavedTripsByUserId(Long userId) {
+        return tripPlanRepository.getAllByUserId(userId);
+    }
+
     // 获取缓存实例
     private Cache<String, TripEntity> getCache() {
         org.springframework.cache.Cache cache = cacheManager.getCache("tripPlanCache");

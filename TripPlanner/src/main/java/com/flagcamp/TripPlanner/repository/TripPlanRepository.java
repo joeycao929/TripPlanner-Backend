@@ -1,10 +1,11 @@
 package com.flagcamp.TripPlanner.repository;
 
 import com.flagcamp.TripPlanner.entity.TripEntity;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.ListCrudRepository;
 
-public interface TripPlanRepository extends CrudRepository<TripEntity, Long> {
-    //save the new plan created by gemini chat
+import java.util.List;
 
+public interface TripPlanRepository extends ListCrudRepository<TripEntity, Long> {
+    // Get all saved trip plans for a specific user
+    List<TripEntity> getAllByUserId(Long userId);
 }
