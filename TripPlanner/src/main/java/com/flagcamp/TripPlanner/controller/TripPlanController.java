@@ -174,8 +174,9 @@ public class TripPlanController {
     }
 
     @PostMapping("/tripplan/save")
-    public String saveTripPlan(@RequestBody SaveTripPlanRequest request) {
+    public ResponseEntity<String> saveTripPlan(@RequestBody SaveTripPlanRequest request) {
         tripPlanService.saveDataToDatabase(request.userId());
-        return "Trip plan saved for user: " + request.userId();
+        String responseMessage = "Trip plan saved for user: " + request.userId();
+        return ResponseEntity.ok(responseMessage);
     }
 }
