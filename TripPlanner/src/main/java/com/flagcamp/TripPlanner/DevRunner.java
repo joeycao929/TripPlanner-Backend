@@ -28,8 +28,8 @@ public class DevRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        UserEntity userInfo1 = new UserEntity(null,"123@gmail.com",true,"1234","felix","oo");
-        UserEntity userInfo2 = new UserEntity(null,"qq3@gmail.com",true,"123224","nirvana","greenday");
+        UserEntity userInfo1 = new UserEntity(null,"123@gmail.com",true,"1234");
+        UserEntity userInfo2 = new UserEntity(null,"qq3@gmail.com",true,"123224");
 
 
         userRepository.save(userInfo1);

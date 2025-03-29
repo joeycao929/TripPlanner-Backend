@@ -6,9 +6,7 @@ CREATE TABLE users (
                        id SERIAL PRIMARY KEY NOT NULL,
                        email TEXT UNIQUE NOT NULL,
                        enabled BOOLEAN DEFAULT TRUE NOT NULL,
-                       password TEXT,
-                       first_name TEXT,
-                       last_name TEXT
+                       password TEXT
 );
 
 CREATE TABLE authorities (

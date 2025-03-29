@@ -26,15 +26,14 @@ public class UserService {
     }
 
     @Transactional
-    public void signUp(String email, String password, String firstName, String lastName) {
-        email = email.toLowerCase();
+    public void signUp(String email, String password) {
         UserDetails user = User.builder()
                 .username(email)
                 .password(passwordEncoder.encode(password))
                 .roles("USER")
                 .build();
         userDetailsManager.createUser(user);
-        userRepository.updateNameByEmail(email, firstName, lastName);
+//        userRepository.updateNameByEmail(email);
 
         UserEntity savedUser = userRepository.findByEmail(email);
 

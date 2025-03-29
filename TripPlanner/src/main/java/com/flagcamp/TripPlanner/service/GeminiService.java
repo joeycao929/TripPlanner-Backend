@@ -72,8 +72,8 @@ public class GeminiService {
     private String getAnswer(TripSearchBody body){
         // Construct request payload
         String question = String.format("Generate Trip Plan for Location: %s, %s from %s to %s, with preference as %s. " +
-                "Give me Place Details with place image url, geo coordinates, ratings and reviews, time to travel each of the location with daily itinerary plan to visit in JSON format. " +
-                "Start the text directly with json without any explanation" +
+                "Give me Place Details with place image url, geo coordinates, ratings and reviews (within 100 characters), time to travel each of the location with daily itinerary plan to visit in JSON format. " +
+                "Start the text directly with json without any explanation. Give me at lease two places per day." +
                 "Sample Json as " +
                 "{\n" +
                 "    \"daily_itinerary\": {\n" +

@@ -8,8 +8,6 @@ public record UserEntity(
         @Id Long id,
         String email,
         boolean enabled,
-        String password,
-        String firstName,
-        String lastName
+        String password
 ) {
 }

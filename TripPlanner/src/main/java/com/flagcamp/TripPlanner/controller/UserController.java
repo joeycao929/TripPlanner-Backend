@@ -21,9 +21,7 @@ public class UserController {
     public void signUp(@RequestBody RegisterBody request) {
         userService.signUp(
                 request.email(),
-                request.password(),
-                request.firstName(),
-                request.lastName()
+                request.password()
         );
     }
 }
