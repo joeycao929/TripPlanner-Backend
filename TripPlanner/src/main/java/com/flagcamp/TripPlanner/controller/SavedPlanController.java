@@ -52,10 +52,8 @@ public class SavedPlanController {
                 tripMap.put("start_date", trip.startTime());
                 tripMap.put("end_date", trip.endTime());
                 
-                // Handle preferences with emoji support
                 String preferences = trip.preferences();
                 if (preferences != null) {
-                    // Use preferences directly - Java String/JSON supports Unicode/emoji
                     tripMap.put("preferences", preferences);
                 }
                 
