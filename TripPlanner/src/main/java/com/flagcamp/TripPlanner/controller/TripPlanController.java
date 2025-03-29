@@ -5,11 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.flagcamp.TripPlanner.entity.TripEntity;
+import com.flagcamp.TripPlanner.entity.UserEntity;
 import com.flagcamp.TripPlanner.model.SaveTripPlanRequest;
 import com.flagcamp.TripPlanner.model.TripSearchBody;
 import com.flagcamp.TripPlanner.service.GeminiService;
 import com.flagcamp.TripPlanner.service.TripPlanService;
+import com.flagcamp.TripPlanner.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
@@ -30,25 +34,28 @@ public class TripPlanController {
     private final GeminiService chatService;
     private final TripPlanService tripPlanService;
     private final ObjectMapper objectMapper;
+    private final UserService userService;
 
     @Autowired
-    public TripPlanController(GeminiService chatService, TripPlanService tripPlanService, ObjectMapper objectMapper) {
+    public TripPlanController(GeminiService chatService, TripPlanService tripPlanService, ObjectMapper objectMapper, UserService userService) {
         this.chatService = chatService;
         this.tripPlanService = tripPlanService;
         this.objectMapper = objectMapper;
+        this.userService = userService;
     }
 
     @PostMapping("/tripplan")
-    public ResponseEntity<Map<String, Object>> getTripPlan(@RequestBody TripSearchBody body) {
+    public ResponseEntity<Map<String, Object>> getTripPlan(@RequestBody TripSearchBody body, @AuthenticationPrincipal User user) {
         // Get LLM data
         JsonNode tripDetailNode = chatService.getTripDetail(body);
+        UserEntity authUser = userService.getUserByEmail(user.getUsername());
         
         // Format data to meet API requirements
         JsonNode formattedTripDetail = formatTripDetail(tripDetailNode);
 
         // Save data to cache
         tripPlanService.saveTempData(
-                body.userId(),
+                authUser.id(),
                 body.city(),
                 body.state(),
                 body.country(),
@@ -174,9 +181,10 @@ public class TripPlanController {
     }
 
     @PostMapping("/tripplan/save")
-    public ResponseEntity<String> saveTripPlan(@RequestBody SaveTripPlanRequest request) {
-        tripPlanService.saveDataToDatabase(request.userId());
-        String responseMessage = "Trip plan saved for user: " + request.userId();
+    public ResponseEntity<String> saveTripPlan(@AuthenticationPrincipal User user) {
+        UserEntity authUser = userService.getUserByEmail(user.getUsername());
+        tripPlanService.saveDataToDatabase(authUser.id());
+        String responseMessage = "Trip plan saved for user: " + authUser.id();
         return ResponseEntity.ok(responseMessage);
     }
 }

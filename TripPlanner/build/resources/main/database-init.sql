@@ -23,9 +23,10 @@ CREATE TABLE trips (
                        user_id INTEGER NOT NULL,
                        country TEXT,
                        city TEXT,
+                       state TEXT,
                        start_time DATE,
                        end_time DATE,
-                       comments TEXT,
-                       trip_plan_detail JSONB,
+                       preferences TEXT,
+                       trip_plan_detail jsonb,
                        CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
